@@ -178,4 +178,28 @@ class ColorFillCircleView(ctx : Context) : View(ctx) {
             return this
         }
     }
+
+    data class ColorFillCircle(var i : Int) {
+
+        private val root : CFCNode = CFCNode(0)
+        private var curr : CFCNode = root
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            root.draw(canvas, 0f, paint)
+        }
+
+        fun update(cb : (Float) -> Unit) {
+            curr.update {
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                cb(it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            curr.startUpdating(cb)
+        }
+    }
 }
