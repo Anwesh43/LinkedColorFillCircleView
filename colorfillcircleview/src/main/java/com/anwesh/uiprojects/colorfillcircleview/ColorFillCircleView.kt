@@ -16,7 +16,6 @@ import android.view.MotionEvent
 
 val colors : Array<String> = arrayOf("#880E4F", "#0D47A1", "#00C853", "#f44336", "#006064")
 val scGap : Float = 0.02f
-val rFactor : Float = 3.4f
 val backColor : Int = Color.parseColor("#BDBDBD")
 val lines : Int = 4
 val lSizeFactor : Float = 3f
@@ -231,7 +230,7 @@ class ColorFillCircleView(ctx : Context) : View(ctx) {
         fun create(activity : Activity) : ColorFillCircleView {
             val cfc : ColorFillCircleView = ColorFillCircleView(activity)
             activity.setContentView(cfc)
-            return cfc 
+            return cfc
         }
     }
 }
