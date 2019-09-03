@@ -15,7 +15,7 @@ import android.view.View
 import android.view.MotionEvent
 
 val colors : Array<String> = arrayOf("#880E4F", "#0D47A1", "#00C853", "#f44336", "#006064")
-val scGap : Float = 0.05f
+val scGap : Float = 0.02f
 val rFactor : Float = 3.4f
 val backColor : Int = Color.parseColor("#BDBDBD")
 val lines : Int = 4
@@ -84,5 +84,25 @@ class ColorFillCircleView(ctx : Context) : View(ctx) {
             }
         }
         return true
+    }
+
+    data class State(var scale : Float = 0f, var dir : Float = 0f, var prevScale : Float = 0f) {
+
+        fun update(cb : (Float) -> Unit) {
+            scale += scGap * dir
+            if (Math.abs(scale - prevScale) > 1f) {
+                scale = prevScale + dir
+                dir = 0f
+                prevScale = scale
+                cb(prevScale)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            if (dir == 0f) {
+                dir = 1f - 2 * prevScale
+                cb()
+            }
+        }
     }
 }
