@@ -202,4 +202,26 @@ class ColorFillCircleView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : ColorFillCircleView) {
+
+        private val cfc : ColorFillCircle = ColorFillCircle(0)
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            cfc.draw(canvas, paint)
+            animator.animate {
+                cfc.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            cfc.startUpdating {
+                animator.stop()
+            }
+        }
+    }
 }
