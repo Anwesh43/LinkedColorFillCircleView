@@ -133,4 +133,49 @@ class ColorFillCircleView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    data class CFCNode(var i : Int) {
+
+        private var prev : CFCNode? = null
+        private var next : CFCNode? = null
+        private val state : State = State()
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < colors.size - 1) {
+                next = CFCNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, sc : Float, paint : Paint) {
+            val sck : Float = canvas.drawCFCNode(i, state.scale, sc, paint)
+            if (sck > 0f) {
+                next?.draw(canvas, sck, paint)
+            }
+        }
+
+        fun update(cb : (Float) -> Unit) {
+            state.update(cb)
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : CFCNode {
+            var curr : CFCNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
+        }
+    }
 }
