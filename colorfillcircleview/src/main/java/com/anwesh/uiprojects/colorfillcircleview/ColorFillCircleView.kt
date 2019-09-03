@@ -20,6 +20,7 @@ val backColor : Int = Color.parseColor("#BDBDBD")
 val lines : Int = 4
 val lSizeFactor : Float = 3f
 val sizeFactor : Float = 3f
+val strokeFactor : Float = 30f
 
 fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
@@ -28,25 +29,31 @@ fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale
 fun Canvas.drawLine(i : Int, size : Float, sc : Float, paint : Paint) {
     save()
     rotate(90f * i)
-    drawLine(0f, 0f, 0f, -size * sc.divideScale(i, lines), paint)
+    drawLine(0f, 0f, 0f, -size * (1 - sc.divideScale(i, lines)), paint)
     restore()
 }
 
 fun Canvas.drawFourLine(sc : Float, size : Float, paint : Paint) {
     paint.color = Color.WHITE
+    paint.strokeWidth = size / strokeFactor
+    paint.strokeCap = Paint.Cap.ROUND
     for (j in 0..(lines - 1)) {
         drawLine(j, size / lSizeFactor, sc, paint)
     }
 }
 
-fun Canvas.drawColorFillCircle(i : Int, size : Float, sc : Float, y : Float, paint : Paint) {
+fun Canvas.drawColorFillCircle(i : Int, size : Float, sc1 : Float, sc2 : Float, y : Float, paint : Paint) {
     save()
     val path : Path = Path()
     path.addCircle(0f, 0f, size, Path.Direction.CW)
     clipPath(path)
     paint.color = Color.parseColor(colors[i])
-    translate(0f, -size - 2 * size * sc + y)
+    translate(0f, -size - 2 * size * sc2 + y)
     drawRect(RectF(-size, 0f, size, 2 * size), paint)
+    save()
+    translate(0f, size)
+    drawFourLine(sc1, size, paint)
+    restore()
     restore()
 }
 
@@ -62,8 +69,8 @@ fun Canvas.drawCFCNode(i : Int, scale : Float, sc : Float, paint : Paint) : Floa
     }
     save()
     translate(w / 2, h / 2)
-    drawColorFillCircle(i, size, sc2, y, paint)
-    drawFourLine(sc1, size, paint)
+    drawColorFillCircle(i, size, sc1, sc2, y, paint)
+
     restore()
     return sc2 
 }
@@ -220,7 +227,7 @@ class ColorFillCircleView(ctx : Context) : View(ctx) {
 
         fun handleTap() {
             cfc.startUpdating {
-                animator.stop()
+                animator.start()
             }
         }
     }
