@@ -225,4 +225,13 @@ class ColorFillCircleView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : ColorFillCircleView {
+            val cfc : ColorFillCircleView = ColorFillCircleView(activity)
+            activity.setContentView(cfc)
+            return cfc 
+        }
+    }
 }
